@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Stereonix - Side-by-Side 3D Stereogram Generator
+    MIT License
+
+    Copyright (c) 2025 NQR
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+    This software includes third-party components:
+    - Depth Anything V2 (Apache 2.0) - AI depth estimation
+    - ONNX Runtime Web (MIT) - WebGPU/WASM inference
+
+    See LICENSES-THIRD-PARTY.md and NOTICE for full attribution.
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create cross-eye side-by-side 3D stereograms from any image using AI-powered depth estimation. Perfect for ARG creators and 3D enthusiasts.">
+  <title>Stereonix</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Stereonix | NQR Labs">
+  <meta property="og:description" content="Create cross-eye side-by-side 3D stereograms from any image using AI-powered depth estimation.">
+  <meta property="og:image" content="https://nqrlabs.com/Stereonix/assets/images/logo.png">
+  <meta property="og:url" content="https://nqrlabs.com/Stereonix/">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Stereonix | NQR Labs">
+  <meta name="twitter:description" content="Create cross-eye side-by-side 3D stereograms from any image using AI-powered depth estimation.">
+  <meta name="twitter:image" content="https://nqrlabs.com/Stereonix/assets/images/logo.png">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://nqrlabs.com/Stereonix/">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+
+  <!-- ONNX Runtime Web for AI depth prediction -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.webgpu.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <div class="container layout-split">
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <header>
+        <img src="assets/images/logo.png" alt="Stereonix Logo" onerror="this.style.display='none'" class="logo">
+        <h1>Stereonix</h1>
+        <p class="subtitle">Side-by-Side 3D Stereogram Generator</p>
+      </header>
+
+      <!-- Load Image Section -->
+      <div class="section">
+        <div class="section-title">Image</div>
+        <button id="loadImageBtn" class="full-width-btn">📁 Load Image</button>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        <div id="loadingStatus" class="info-hint" style="margin-top: 10px; text-align: center; display: none;">
+          <span id="loadingText">Processing...</span>
+        </div>
+      </div>
+
+      <!-- Crop & Position Section -->
+      <div class="section" id="cropSection" style="display: none;">
+        <div class="section-title">Crop & Position</div>
+
+        <!-- Preview Zoom -->
+        <div class="control-group">
+          <label class="control-label">Preview Zoom</label>
+          <div class="range-container">
+            <input type="range" id="previewZoomSlider" min="25" max="100" value="50" step="5">
+            <span class="range-value" id="previewZoomValue">50%</span>
+          </div>
+          <div class="info-hint">Scale preview for easier cross-eye viewing (doesn't affect output)</div>
+        </div>
+
+        <!-- Image Zoom -->
+        <div class="control-group">
+          <label class="control-label">Image Zoom</label>
+          <div class="range-container">
+            <input type="range" id="zoomSlider" min="50" max="200" value="100" step="1">
+            <span class="range-value" id="zoomValue">100%</span>
+          </div>
+        </div>
+
+        <!-- Pan X -->
+        <div class="control-group">
+          <label class="control-label">Pan Horizontal</label>
+          <div class="range-container">
+            <input type="range" id="panXSlider" min="-500" max="500" value="0" step="1">
+            <span class="range-value" id="panXValue">0</span>
+          </div>
+        </div>
+
+        <!-- Pan Y -->
+        <div class="control-group">
+          <label class="control-label">Pan Vertical</label>
+          <div class="range-container">
+            <input type="range" id="panYSlider" min="-500" max="500" value="0" step="1">
+            <span class="range-value" id="panYValue">0</span>
+          </div>
+        </div>
+
+        <div class="info-hint">Drag the preview to reposition. Adjust zoom to focus on areas of interest.</div>
+      </div>
+
+      <!-- 3D Settings Section -->
+      <div class="section" id="depthSection" style="display: none;">
+        <div class="section-title">3D Settings</div>
+
+        <!-- Depth Intensity -->
+        <div class="control-group">
+          <label class="control-label">Depth Intensity</label>
+          <div class="range-container">
+            <input type="range" id="depthIntensitySlider" min="0" max="100" value="25" step="1">
+            <span class="range-value" id="depthIntensityValue">25</span>
+          </div>
+          <div class="info-hint">Controls how much the images shift apart</div>
+        </div>
+
+        <!-- Depth Gamma -->
+        <div class="control-group">
+          <label class="control-label">Depth Gamma</label>
+          <div class="range-container">
+            <input type="range" id="depthGammaSlider" min="0.5" max="2.0" value="1.0" step="0.05">
+            <span class="range-value" id="depthGammaValue">1.0</span>
+          </div>
+          <div class="info-hint">Adjust depth curve for more or less realistic 3D effect</div>
+        </div>
+
+        <!-- Invert Depth -->
+        <div class="control-group">
+          <label class="control-label">
+            <input type="checkbox" id="invertDepthCheckbox">
+            Invert Depth
+          </label>
+          <div class="info-hint">Flip which parts appear closer</div>
+        </div>
+      </div>
+
+      <!-- Export Section -->
+      <div class="section" id="exportSection" style="display: none;">
+        <div class="section-title">Export</div>
+        <button id="saveBtn" class="full-width-btn">💾 Save Stereogram</button>
+        <div class="info-hint">Cross your eyes to merge the two images and see the 3D effect</div>
+      </div>
+
+      <!-- Footer with License Link -->
+      <footer class="panel-footer">
+        <a href="https://nqrlabs.com" target="_blank">NQR Labs</a> |
+        <a href="https://discord.gg/HT9YE8rvuN" target="_blank">Discord</a> |
+        <button type="button" id="licenseFooter" class="link-style">License</button>
+      </footer>
+    </div>
+
+    <!-- Preview/Canvas Area -->
+    <div class="preview-panel">
+      <canvas id="previewCanvas" aria-label="Side-by-side stereogram preview"></canvas>
+      <div class="preview-overlay" id="previewOverlay" aria-hidden="true">
+        <p>Load an image to generate a side-by-side 3D stereogram</p>
+        <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">AI depth estimation • Cross-eye viewing</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LICENSE MODAL -->
+  <div class="license-overlay" id="licenseOverlay"></div>
+  <div class="license-modal" id="licenseModal" role="dialog" aria-modal="true" aria-labelledby="licenseModalTitle">
+    <div class="license-modal-header">
+      <h2 class="license-modal-title" id="licenseModalTitle">Stereonix License</h2>
+      <button type="button" class="license-close" id="licenseClose" aria-label="Close license modal">×</button>
+    </div>
+    <div class="license-modal-text">Stereonix - MIT License
+
+Copyright (c) 2025 NQR
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THIRD-PARTY COMPONENTS
+
+This software includes third-party libraries:
+
+• Depth Anything V2 (Apache License 2.0)
+  AI depth estimation model
+  https://github.com/DepthAnything/Depth-Anything-V2
+
+• ONNX Runtime Web (MIT License)
+  WebGPU/WebAssembly inference engine
+  https://github.com/microsoft/onnxruntime
+
+See LICENSES-THIRD-PARTY.md and NOTICE for complete attribution.
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

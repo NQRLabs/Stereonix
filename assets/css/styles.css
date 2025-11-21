@@ -1,0 +1,579 @@
+/**
+ * NQR Labs App Template - Styles
+ * MIT License - Copyright (c) 2025 NQR
+ *
+ * Design System:
+ * - Background: #04070a (dark blue-black)
+ * - Primary accent: #5de1ff (cyan)
+ * - Secondary accent: #00ffaa (teal green)
+ * - Text: #d7e8ff (light blue-white)
+ * - Panel gradient: #0a0f14 → #04070a
+ */
+
+/* ============================================================================
+   GLOBAL RESET & BASE STYLES
+   ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Color Palette */
+  --color-bg-primary: #04070a;
+  --color-bg-panel: #0a0f14;
+  --color-accent-cyan: #5de1ff;
+  --color-accent-teal: #00ffaa;
+  --color-text-primary: #d7e8ff;
+  --color-text-secondary: #8b9cb7;
+  --color-border: rgba(93, 225, 255, 0.2);
+  --color-button-bg: rgba(93, 225, 255, 0.15);
+  --color-button-hover: rgba(93, 225, 255, 0.25);
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  height: 100vh;
+  line-height: 1.6;
+}
+
+/* ============================================================================
+   LAYOUT CONTAINERS
+   ============================================================================ */
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Split Layout: Control Panel + Preview */
+.layout-split {
+  flex-direction: row;
+}
+
+/* Center Layout: Panels down the middle */
+.layout-center {
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding: 40px 20px;
+}
+
+/* ============================================================================
+   CONTROL PANEL (Sidebar for split layout)
+   ============================================================================ */
+
+.control-panel {
+  width: 320px;
+  background: linear-gradient(180deg, var(--color-bg-panel) 0%, var(--color-bg-primary) 100%);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+.control-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.control-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+  background: rgba(93, 225, 255, 0.3);
+  border-radius: 4px;
+}
+
+.control-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(93, 225, 255, 0.5);
+}
+
+/* ============================================================================
+   CENTER PANEL (For center layout)
+   ============================================================================ */
+
+.center-panel {
+  width: 100%;
+  max-width: 800px;
+  background: linear-gradient(180deg, var(--color-bg-panel) 0%, var(--color-bg-primary) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+/* ============================================================================
+   HEADER (Logo, Title, Subtitle)
+   ============================================================================ */
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 15px;
+  width: 50%;
+  max-width: 150px;
+  height: auto;
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-accent-cyan);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+/* ============================================================================
+   SECTIONS
+   ============================================================================ */
+
+.section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(93, 225, 255, 0.03);
+  border: 1px solid rgba(93, 225, 255, 0.1);
+  border-radius: 6px;
+}
+
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent-cyan);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+button {
+  background: var(--color-button-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-accent-cyan);
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+button:hover {
+  background: var(--color-button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(93, 225, 255, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.full-width-btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* ============================================================================
+   FORM CONTROLS
+   ============================================================================ */
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+.control-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--color-text-primary);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  background: rgba(93, 225, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-accent-cyan);
+  background: rgba(93, 225, 255, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+select {
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Range Slider */
+.range-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(93, 225, 255, 0.2);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--color-accent-cyan);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--color-accent-cyan);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-value {
+  min-width: 40px;
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--color-accent-cyan);
+  font-weight: 500;
+}
+
+.info-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ============================================================================
+   PREVIEW PANEL (Canvas/Output Area)
+   ============================================================================ */
+
+.preview-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  position: relative;
+  overflow: auto;
+}
+
+.preview-panel canvas {
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: crisp-edges;
+}
+
+.preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.preview-overlay p {
+  color: var(--color-text-secondary);
+  font-size: 1.2rem;
+}
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+
+.panel-footer {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.panel-footer a {
+  color: var(--color-accent-cyan);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.panel-footer a:hover {
+  color: var(--color-accent-teal);
+  text-decoration: underline;
+}
+
+.link-style {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-accent-cyan);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.link-style:hover {
+  color: var(--color-accent-teal);
+  text-decoration: underline;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============================================================================
+   LICENSE MODAL
+   ============================================================================ */
+
+.license-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.license-overlay.show {
+  display: block;
+}
+
+.license-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  background: linear-gradient(180deg, var(--color-bg-panel) 0%, var(--color-bg-primary) 100%);
+  border: 2px solid var(--color-accent-cyan);
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(93, 225, 255, 0.3);
+}
+
+.license-modal.show {
+  display: block;
+}
+
+.license-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.license-modal-title {
+  font-size: 1.3rem;
+  color: var(--color-accent-cyan);
+  margin: 0;
+}
+
+.license-close {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 2rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.license-close:hover {
+  color: var(--color-accent-cyan);
+  transform: none;
+  box-shadow: none;
+}
+
+.license-modal-text {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 80px);
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+.license-modal-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.license-modal-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.license-modal-text::-webkit-scrollbar-thumb {
+  background: rgba(93, 225, 255, 0.3);
+  border-radius: 4px;
+}
+
+/* ============================================================================
+   HELP TEXT / EMPTY STATES
+   ============================================================================ */
+
+.help-text {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  padding: 15px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .control-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .layout-split {
+    flex-direction: column;
+  }
+
+  .preview-panel {
+    flex: 1;
+    min-height: 300px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .center-panel {
+    padding: 20px;
+  }
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+/* Accessibility: Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
