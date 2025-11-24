@@ -388,6 +388,7 @@ input[type="range"]::-moz-range-thumb:hover {
 }
 
 .panel-footer a:hover {
+  cursor: pointer;
   color: var(--color-accent-teal);
   text-decoration: underline;
 }
